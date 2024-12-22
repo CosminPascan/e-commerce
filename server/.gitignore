@@ -1,0 +1,12 @@
+# .env file
+.env
+
+# firebase service account key
+database/dbAccountKey.json
+
+# node modules
+node_modules
+
+# package-lock file
+package-lock.json
+

@@ -1,0 +1,98 @@
+const bcrypt = require('bcrypt')
+const db = require('../database/dbConfig')
+const jwt = require('jsonwebtoken')
+const privateKey = process.env.PRIVATE_KEY
+
+const registerUser = async (req, res) => {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+
+    const user = {
+        email: req.body.email,
+        password: hashedPassword
+    }
+
+    try {
+        const newUser = await db.collection('users').add(user)
+        const userDocument = await newUser.get()
+        const userData = userDocument.data()
+
+        res.status(201).json({
+            id: newUser.id,
+            ...userData
+        })
+    } catch (error) {
+        res.status(500).send(JSON.stringify(error))
+    }
+}
+
+const loginUser = async (req, res) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password
+    }
+
+    const usersRef = db.collection('users')
+    const querySnapshot = await usersRef.where('email', '==', user.email).limit(1).get()
+
+    if (querySnapshot.empty)
+        return res.status(401).send({ message: 'No account with this email!' })
+
+    let encodedData = {}
+    let hashedPassword = ''
+
+    querySnapshot.forEach((doc) => {
+        const userData = doc.data()
+        encodedData.email = userData.email
+        hashedPassword = userData.password
+    })
+
+    bcrypt.compare(user.password, hashedPassword, (error, result) => {
+        if (result) {
+            const accessToken = jwt.sign(encodedData, privateKey, { expiresIn: '60s' })
+            res.status(200).send({ accessToken: accessToken })
+        } else {
+            res.status(401).send({ message: 'Passwords do not match!' })
+        }
+    })
+}
+
+const getAllUsers = async (req, res) => {
+    try {
+        const usersRef = db.collection('users')
+        const querySnapshot = await usersRef.get()
+
+        const users = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data()
+            }
+        })
+
+        res.status(200).json(users)
+    } catch (error) {
+        res.status(500).send(JSON.stringify(error))
+    }
+}
+
+const checkEmailNotUsed = async (email) => {
+    try {
+        const usersRef = db.collection('users')
+        const querySnapshot = await usersRef.where('email', '==', email).limit(1).get()
+
+        if (!querySnapshot.empty) {
+            return Promise.reject('Email already used!')
+        }
+
+        return true
+    } catch (error) {
+        console.error('Error checking email: ', error)
+        throw error
+    }
+}
+
+module.exports = {
+    registerUser,
+    loginUser,
+    getAllUsers,
+    checkEmailNotUsed
+}
