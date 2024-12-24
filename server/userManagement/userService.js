@@ -4,10 +4,14 @@ const jwt = require('jsonwebtoken')
 const privateKey = process.env.PRIVATE_KEY
 
 const registerUser = async (req, res) => {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const { email, password } = req.body
+
+    const username = email.substring(0, email.indexOf('@'))
+    const hashedPassword = await bcrypt.hash(password, 10)
 
     const user = {
-        email: req.body.email,
+        email: email,
+        username: username,
         password: hashedPassword
     }
 
@@ -34,8 +38,7 @@ const loginUser = async (req, res) => {
     const usersRef = db.collection('users')
     const querySnapshot = await usersRef.where('email', '==', user.email).limit(1).get()
 
-    if (querySnapshot.empty)
-        return res.status(401).send({ message: 'No account with this email!' })
+    if (querySnapshot.empty) return res.status(401).send({ message: 'No account with this email!' })
 
     let encodedData = {}
     let hashedPassword = ''
@@ -43,15 +46,16 @@ const loginUser = async (req, res) => {
     querySnapshot.forEach((doc) => {
         const userData = doc.data()
         encodedData.email = userData.email
+        encodedData.username = userData.username
         hashedPassword = userData.password
     })
 
     bcrypt.compare(user.password, hashedPassword, (error, result) => {
         if (result) {
             const accessToken = jwt.sign(encodedData, privateKey, { expiresIn: '60s' })
-            res.status(200).send({ accessToken: accessToken })
+            res.status(200).send({ user: encodedData, accessToken: accessToken })
         } else {
-            res.status(401).send({ message: 'Passwords do not match!' })
+            res.status(401).send({ message: 'Wrong password! Try again!' })
         }
     })
 }
