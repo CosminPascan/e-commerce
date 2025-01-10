@@ -2,12 +2,9 @@ const jwt = require('jsonwebtoken')
 const privateKey = process.env.PRIVATE_KEY
 
 const verifyToken = (req, res, next) => {
-    const authHeader = req.headers['authorization']
+    const accessToken = req.cookies['access-token']
 
-    if (authHeader === undefined)
-        return res.status(401).send({ message: 'No authorization header!' })
-
-    const accessToken = authHeader.split(' ')[1]
+    if (accessToken === undefined) return res.status(401).send({ message: 'No cookies!' })
 
     jwt.verify(accessToken, privateKey, (error, user) => {
         if (error) {

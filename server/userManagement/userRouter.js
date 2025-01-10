@@ -9,23 +9,4 @@ router.get('/users', userService.getAllUsers)
 router.post('/register', registerValidationRules, validate, userService.registerUser)
 router.post('/login', loginValidationRules, validate, userService.loginUser)
 
-router.get('/resurse', verifyToken, (req, res) => {
-    console.log(req.user)
-    const data = [
-        {
-            nume: 'Ioana',
-            prenume: 'Maria'
-        },
-        {
-            nume: 'Mihai',
-            prenume: 'Mario'
-        },
-        {
-            nume: 'Ioana',
-            prenume: 'Maria'
-        }
-    ]
-    res.status(200).json(data)
-})
-
 module.exports = router

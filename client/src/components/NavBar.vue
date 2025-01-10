@@ -1,20 +1,35 @@
 <template>
     <v-app-bar class="px-16">
-        <v-btn v-if="!$store.state.isAuthenticated" to="/register" class="mx-4">Register</v-btn>
-        <v-btn v-if="!$store.state.isAuthenticated" to="/login" class="mx-4">Login</v-btn>
-        <v-btn v-if="$store.state.isAuthenticated" to="/" class="mx-4">Home</v-btn>
-        <v-btn v-if="$store.state.isAuthenticated" class="mx-4" color="red" variant="tonal" @click="logout">Logout</v-btn>
+        <div v-if="!isAuthenticated" class="d-flex ml-auto">
+            <v-btn to="/register" class="mx-4">Register</v-btn>
+            <v-btn to="/login" class="mx-4">Login</v-btn>
+        </div>
+        <div v-if="isAuthenticated" class="d-flex d-flex mr-auto">
+            <v-btn to="/" class="mx-4">Home</v-btn>
+            <v-btn to="/shop" class="mx-4">Shop</v-btn>
+        </div>
+        <div v-if="isAuthenticated" class="d-flex align-center ml-auto">
+            <div class="text-subtitle-1 mx-4">Welcome, {{ username }}</div>
+            <v-btn class="mx-4" color="red" variant="tonal" @click="handleLogout">Logout</v-btn>
+        </div>
     </v-app-bar>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
     name: 'NavigationBar',
+    computed: {
+        ...mapGetters({
+            username: 'account/getUsername',
+            isAuthenticated: 'account/isAuthenticated'
+        })
+    },
     methods: {
-        logout() {
-            this.$store.dispatch('setUser', null)
-            this.$store.dispatch('setToken', null)
-            this.$router.push('/login')
+        ...mapActions({ logout: 'account/logout' }),
+        handleLogout() {
+            this.logout()
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <v-main class="d-flex align-center justify-center">
-        <v-form @submit="(event) => login(event)">
+        <v-form @submit.prevent="handleLogin">
             <v-card class="pa-12" min-width="380" elevation="8" rounded="lg">
                 <div class="text-center text-h4 mb-6">Login</div>
 
@@ -40,40 +40,29 @@
 </template>
 
 <script>
-import axiosInstance from '@/api/axios'
+import { mapActions } from 'vuex'
 
 export default {
     name: 'Login',
-    data: () => ({
-        email: '',
-        password: '',
-        visible: false,
-        emailRules: [
-            (value) => !!value || 'Email is required!',
-            (value) => value.length >= 8 || 'Email must contain at least 8 characters!'
-        ],
-        passwordRules: [
-            (value) => !!value || 'Password is required!',
-            (value) => value.length >= 8 || 'Password must contain at least 8 characters!'
-        ]
-    }),
+    data() {
+        return {
+            email: '',
+            password: '',
+            visible: false,
+            emailRules: [
+                value => !!value || 'Email is required!',
+                value => value.length >= 8 || 'Email must contain at least 8 characters!'
+            ],
+            passwordRules: [
+                value => !!value || 'Password is required!',
+                value => value.length >= 8 || 'Password must contain at least 8 characters!'
+            ]
+        }
+    },
     methods: {
-        async login(event) {
-            event.preventDefault()
-            try {
-                const response = await axiosInstance.post('/login', {
-                    email: this.email,
-                    password: this.password
-                })
-                this.$store.dispatch('setUser', response.data.user)
-                this.$store.dispatch('setToken', response.data.accessToken)
-                this.$router.push('/')
-            } catch (error) {
-                if (error.status === 400 || error.status === 401) 
-                    alert(error.response.data.message)
-                this.email = ''
-                this.password = ''
-            }
+        ...mapActions({ login: 'account/login' }),
+        handleLogin() {
+            this.login({ email: this.email, password: this.password })
         }
     }
 }
