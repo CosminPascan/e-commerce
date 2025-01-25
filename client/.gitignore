@@ -7,3 +7,5 @@ package-lock.json
 # editor directories and files
 .vscode
 
+# firebase config file
+firebase.js

@@ -52,7 +52,7 @@ const loginUser = async (req, res) => {
 
     bcrypt.compare(user.password, hashedPassword, (error, result) => {
         if (result) {
-            const accessToken = jwt.sign(encodedData, privateKey, { expiresIn: '10s' })
+            const accessToken = jwt.sign(encodedData, privateKey, { expiresIn: '3000s' })
             res.cookie('access-token', accessToken, { httpOnly: true })
             res.status(200).send({ user: encodedData, accessToken: accessToken })
         } else {

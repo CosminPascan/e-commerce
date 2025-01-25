@@ -4,12 +4,16 @@ import Login from '@/views/Login.vue'
 import Home from '@/views/Home.vue'
 import Shop from '@/views/Shop.vue'
 import store from '@/store'
+import PerfumesNew from '@/views/PerfumesNew.vue'
+import PerfumesDetail from '@/views/PerfumesDetail.vue'
 
 const routes = [
     { path: '/register', component: Register },
     { path: '/login', component: Login },
     { path: '/', component: Home, meta: { requiresAuth: true } },
-    { path: '/shop', component: Shop, meta: { requiresAuth: true } }
+    { path: '/shop', component: Shop, meta: { requiresAuth: true } },
+    { path: '/perfumes/new', component: PerfumesNew, meta: { requiresAuth: true } },
+    { path: '/perfumes/:id', component: PerfumesDetail, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({
@@ -20,7 +24,8 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const isAuthenticated = store.getters['account/isAuthenticated']
 
-    if (isAuthenticated && (to.path === '/login' || to.path === '/register')) return next('/shop')
+    if (isAuthenticated && (to.path === '/login' || to.path === '/register'))
+        return next('/shop')
 
     if (!isAuthenticated && to.meta.requiresAuth) return next('/login')
 

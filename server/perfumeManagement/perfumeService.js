@@ -5,8 +5,7 @@ const getAllPerfumes = async (req, res) => {
     try {
         const perfumesRef = db.collection('perfumes')
         const querySnapshot = await perfumesRef.get()
-
-        const perfumes = querySnapshot.docs.map((doc) => {
+        const perfumes = querySnapshot.docs.map(doc => {
             return {
                 id: doc.id,
                 ...doc.data()
@@ -14,6 +13,36 @@ const getAllPerfumes = async (req, res) => {
         })
 
         res.status(200).json(perfumes)
+    } catch (error) {
+        res.status(500).send(JSON.stringify(error))
+    }
+}
+
+const postPerfume = async (req, res) => {
+    const perfume = req.body
+
+    try {
+        const perfumesRef = db.collection('perfumes')
+        const newPerfume = await perfumesRef.add(perfume)
+        const perfumeDoc = await newPerfume.get()
+
+        res.status(201).json({
+            id: perfumeDoc.id,
+            ...perfumeDoc.data()
+        })
+    } catch (error) {
+        res.status(500).send(JSON.stringify(error))
+    }
+}
+
+const deletePerfume = async (req, res) => {
+    const id = req.params.id
+
+    try {
+        const perfumeRef = db.collection('perfumes').doc(`${id}`)
+        await perfumeRef.delete()
+
+        res.status(204).send()
     } catch (error) {
         res.status(500).send(JSON.stringify(error))
     }
@@ -35,7 +64,7 @@ const postExternalPerfumes = async (req, res) => {
                 ...perfumeData
             })
         }
-        
+
         res.status(201).json(newPerfumes)
     } catch (error) {
         res.status(500).send(JSON.stringify(error))
@@ -44,5 +73,7 @@ const postExternalPerfumes = async (req, res) => {
 
 module.exports = {
     getAllPerfumes,
+    postPerfume,
+    deletePerfume,
     postExternalPerfumes
 }
