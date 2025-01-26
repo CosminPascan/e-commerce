@@ -3,7 +3,7 @@
         <v-form class="ma-12" @submit.prevent="handleEditPerfume" ref="form">
             <v-card class="px-12 py-10" width="700" elevation="8" rounded="lg">
                 <div class="d-flex align-center justify-space-between pb-10">
-                    <v-img :src="perfume.imageUrl" max-height="80px" max-width="120px"></v-img>
+                    <v-img :src="imageSrc" max-height="80px" max-width="120px"></v-img>
                     <div class="text-center text-h5 font-weight-bold">Edit perfume</div>
                     <v-btn type="submit" color="blue">Edit</v-btn>
                 </div>
@@ -79,6 +79,7 @@
                     <v-col cols="12" sm="6">
                         <v-combobox
                             v-model="perfume.variants"
+                            :rules="numericArrayInputRules"
                             label="Variants (ml)"
                             type="number"
                             density="compact"
@@ -88,6 +89,19 @@
                             multiple
                         ></v-combobox>
                     </v-col>
+                    <v-col cols="12" sm="6">
+                        <v-file-input
+                            v-model="image"
+                            :rules="fileInputRules"
+                            label="Image"
+                            prepend-icon=""
+                            prepend-inner-icon="mdi-camera"
+                            density="compact"
+                            variant="outlined"
+                            clearable
+                            chips
+                        ></v-file-input>
+                    </v-col>
                 </v-row>
             </v-card>
         </v-form>
@@ -95,43 +109,44 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
     data() {
         return {
-            perfume: {
-                variants: []
-            },
+            perfume: {},
+            image: null,
             textInputRules: [
                 value => !!value || 'This field is required!',
-                value =>
-                    value.length >= 3 || 'This field must contain at least 3 characters!'
+                value => value.length >= 3 || 'This field must contain at least 3 characters!'
             ],
             selectInputRules: [
                 value => value !== 'Choose a type' || 'This selection is required!',
                 value => value !== 'Choose a category' || 'This selection is required!'
             ],
             numericInputRules: [value => !!value || 'This field is required!'],
-            // numericArrayInputRules: [array => array.length > 0 || 'Add more values!'],
+            numericArrayInputRules: [array => array.length > 0 || 'Add more values!'],
             fileInputRules: [
-                value => value.length !== 0 || 'This field is required!',
-                value => value[0].type.includes('image/') || 'File format is wrong!'
+                value => (value.length === 0 || value[0].type.includes('image/')) || 'File format is wrong!'
             ]
         }
     },
     computed: {
-        ...mapGetters({ getPerfumeById: 'perfumes/getPerfumeById' })
+        ...mapGetters({ getPerfumeById: 'perfumes/getPerfumeById' }),
+        imageSrc() {
+            if (this.image) return URL.createObjectURL(this.image)
+            return this.perfume.imageUrl
+        }
     },
     methods: {
+        ...mapActions({ editPerfume: 'perfumes/editPerfume' }),
         async handleEditPerfume() {
             const { valid } = await this.$refs.form.validate()
-
             if (valid) {
                 this.perfume.variants = this.perfume.variants.map(v => Number(v))
-
-                // this.editPerfume
-                // this.addPerfume({ perfume: this.perfume, image: this.image })
+                const id = this.perfume.id
+                delete this.perfume.id
+                this.editPerfume({ id: id, perfume: this.perfume, image: this.image })
             } else {
                 alert('Fix errors before submitting!')
             }

@@ -5,8 +5,8 @@
             <v-btn to="/login" class="mx-4">Login</v-btn>
         </div>
         <div v-if="isAuthenticated" class="d-flex d-flex mr-auto">
-            <v-btn to="/" class="mx-4">Home</v-btn>
-            <v-btn to="/shop" class="mx-4">Shop</v-btn>
+            <v-btn to="/" class="mx-4">Shop</v-btn>
+            <v-btn to="/cart" class="mx-4">Cart</v-btn>
         </div>
         <div v-if="isAuthenticated" class="d-flex align-center ml-auto">
             <div class="text-subtitle-1 mx-4">Welcome, {{ username }}</div>

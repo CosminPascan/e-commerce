@@ -3,6 +3,7 @@
         <v-form class="ma-12" @submit.prevent="handleCreatePerfume" ref="form">
             <v-card class="px-12 py-10" width="700" elevation="8" rounded="lg">
                 <div class="d-flex align-center justify-space-between pb-10">
+                    <v-img :src="imageSrc" max-height="80px" max-width="120px"></v-img>
                     <div class="text-center text-h5 font-weight-bold">New perfume</div>
                     <v-btn type="submit" color="blue">Create</v-btn>
                 </div>
@@ -138,6 +139,11 @@ export default {
                 value => value.length !== 0 || 'This field is required!',
                 value => value[0].type.includes('image/') || 'File format is wrong!'
             ]
+        }
+    },
+    computed: {
+        imageSrc() {
+            if (this.image) return URL.createObjectURL(this.image)
         }
     },
     methods: {

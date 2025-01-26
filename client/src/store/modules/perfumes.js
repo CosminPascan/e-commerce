@@ -19,6 +19,9 @@ export default {
         ADD_PERFUME(state, perfume) {
             state.perfumes.push(perfume)
         },
+        EDIT_PERFUME(state, perfume) {
+            state.perfumes = state.perfumes.map(p => p.id === perfume.id ? perfume : p)
+        },
         DELETE_PERFUME(state, id) {
             state.perfumes = state.perfumes.filter(p => p.id !== id)
         }
@@ -35,17 +38,35 @@ export default {
         async addPerfume({ commit }, payload) {
             const { perfume, image } = payload
 
-            const fileName = `${new Date().getTime()}_${perfume.name.replace(/\s+/g, '_')}`
-            const storageRef = ref(storage, `images/${fileName}`)
-
             try {
+                const fileName = `${new Date().getTime()}_${perfume.name.replace(/\s+/g, '_')}`
+                const storageRef = ref(storage, `images/${fileName}`)
                 const snapshot = await uploadBytes(storageRef, image)
                 const url = await getDownloadURL(snapshot.ref)
                 perfume.imageUrl = url
 
                 const response = await axiosInstance.post('/perfumes', perfume)
                 commit('ADD_PERFUME', response.data)
-                router.push('/shop')
+                router.push('/')
+            } catch {
+                console.error(error.response.data.message)
+            }
+        },
+        async editPerfume({ commit }, payload) {
+            const { id, perfume, image } = payload
+
+            try {
+                if (image) {
+                    const fileName = `${new Date().getTime()}_${perfume.name.replace(/\s+/g, '_')}`
+                    const storageRef = ref(storage, `images/${fileName}`)
+                    const snapshot = await uploadBytes(storageRef, image)
+                    const url = await getDownloadURL(snapshot.ref)
+                    perfume.imageUrl = url
+                }
+
+                const response = await axiosInstance.put(`/perfumes/${id}`, perfume)
+                commit('EDIT_PERFUME', response.data)
+                router.push('/')
             } catch {
                 console.error(error.response.data.message)
             }

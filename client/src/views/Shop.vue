@@ -11,11 +11,13 @@
                 <v-col cols="12" md="3" v-for="perfume in perfumes" :key="perfume.id">
                     <v-card class="position-relative" :elevation="3">
                         <v-img :src="perfume.imageUrl" class="mt-12" max-height="120px"></v-img>
-                        <v-card-title class="text-center text-subtitle-2 font-weight-bold">{{ perfume.name }}</v-card-title>
-                        <v-card-subtitle class="text-center my-2">{{ perfume.price }} RON</v-card-subtitle>
+                        <v-card-title class="text-center text-subtitle-2 font-weight-bold">{{ perfume.brand }} {{ perfume.name }}</v-card-title>
+                        <v-card-subtitle class="text-center my-2">{{ perfume.type }} | {{ perfume.category }}</v-card-subtitle>
+                        <v-card-subtitle class="text-center font-weight-bold my-2">{{ perfume.price }} RON</v-card-subtitle>
                         <!-- TODO vizibile doar pt useri cu rolul admin -->
-                        <v-btn class="position-absolute top-0 right-0 ma-3" icon="mdi-trash-can-outline" color="red" size="x-small" @click="handleDelete(perfume)"></v-btn>
                         <v-btn class="position-absolute top-0 left-0 ma-3" icon="mdi-pencil" color="blue" size="x-small" @click="navToEditForm(perfume.id)"></v-btn>
+                        <v-btn class="position-absolute top-0 right-0 ma-3" icon="mdi-trash-can-outline" color="red" size="x-small" @click="handleDelete(perfume)"></v-btn>
+                        <v-btn class="position-absolute bottom-0 right-0 ma-3" icon="mdi-cart-outline" color="green" size="x-small" @click="handleAddToCart(perfume)"></v-btn>
                     </v-card>
                 </v-col>
             </v-row>
@@ -27,14 +29,14 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-    name: 'Shop', 
     computed: {
         ...mapGetters({ perfumes: 'perfumes/getPerfumes' })
     },
     methods: {
         ...mapActions({ 
             fetchPerfumes: 'perfumes/fetchPerfumes',
-            deletePerfume: 'perfumes/deletePerfume'
+            deletePerfume: 'perfumes/deletePerfume',
+            addToCart: 'cart/addToCart'
         }),
         navToAddForm() {
             this.$router.push('/perfumes/new')
@@ -44,6 +46,10 @@ export default {
         },
         handleDelete(perfume) {
             this.deletePerfume(perfume)
+        },
+        handleAddToCart(perfume) {
+            this.addToCart(perfume)
+            alert(`${perfume.name} added to the cart!`)
         }
     },
     created() {

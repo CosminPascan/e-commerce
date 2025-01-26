@@ -35,11 +35,29 @@ const postPerfume = async (req, res) => {
     }
 }
 
+const putPerfume = async (req, res) => {
+    const id = req.params.id
+    const perfume = req.body
+
+    try {
+        const perfumeRef = db.collection('perfumes').doc(id)
+        await perfumeRef.set(perfume)
+        const perfumeDoc = await perfumeRef.get()
+
+        res.status(201).json({
+            id: perfumeDoc.id,
+            ...perfumeDoc.data()
+        })
+    } catch (error) {
+        res.status(500).send(JSON.stringify(error))
+    }
+}
+
 const deletePerfume = async (req, res) => {
     const id = req.params.id
 
     try {
-        const perfumeRef = db.collection('perfumes').doc(`${id}`)
+        const perfumeRef = db.collection('perfumes').doc(id)
         await perfumeRef.delete()
 
         res.status(204).send()
@@ -74,6 +92,7 @@ const postExternalPerfumes = async (req, res) => {
 module.exports = {
     getAllPerfumes,
     postPerfume,
+    putPerfume,
     deletePerfume,
     postExternalPerfumes
 }
