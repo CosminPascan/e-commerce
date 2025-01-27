@@ -6,13 +6,16 @@ const privateKey = process.env.PRIVATE_KEY
 const registerUser = async (req, res) => {
     const { email, password } = req.body
 
+    const role = req.body.role ? req.body.role : 'user'
+
     const username = email.substring(0, email.indexOf('@'))
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const user = {
         email: email,
         username: username,
-        password: hashedPassword
+        password: hashedPassword,
+        role: role
     }
 
     try {
@@ -45,8 +48,10 @@ const loginUser = async (req, res) => {
 
     querySnapshot.forEach((doc) => {
         const userData = doc.data()
+        encodedData.id = doc.id
         encodedData.email = userData.email
         encodedData.username = userData.username
+        encodedData.role = userData.role
         hashedPassword = userData.password
     })
 

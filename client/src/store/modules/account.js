@@ -5,10 +5,13 @@ export default {
     namespaced: true,
     state: {
         user: null,
-        authenticated: false
+        authenticated: false,
+        role: null
     },
     getters: {
-        getUsername: state => state.user.username,
+        getUsername: state => state.user ? state.user.username : null,
+        getUserId: state => state.user ? state.user.id : null,
+        getUserRole: state => state.user? state.user.role : null,
         isAuthenticated: state => state.authenticated
     },
     mutations: {

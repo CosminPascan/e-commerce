@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const port = 3000
 const userRouter = require('./userManagement/userRouter')
 const perfumeRouter = require('./perfumeManagement/perfumeRouter')
+const orderRouter = require('./orderManagement/orderRouter')
 
 app.use(express.json())
 app.use(cors({
@@ -15,6 +16,7 @@ app.use(cors({
 app.use(cookieParser())
 app.use(userRouter)
 app.use(perfumeRouter)
+app.use(orderRouter)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

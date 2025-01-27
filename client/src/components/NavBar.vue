@@ -7,6 +7,7 @@
         <div v-if="isAuthenticated" class="d-flex d-flex mr-auto">
             <v-btn to="/" class="mx-4">Shop</v-btn>
             <v-btn to="/cart" class="mx-4">Cart</v-btn>
+            <v-btn to="/orders" class="mx-4">Orders</v-btn>
         </div>
         <div v-if="isAuthenticated" class="d-flex align-center ml-auto">
             <div class="text-subtitle-1 mx-4">Welcome, {{ username }}</div>
@@ -27,9 +28,13 @@ export default {
         })
     },
     methods: {
-        ...mapActions({ logout: 'account/logout' }),
+        ...mapActions({ 
+            logout: 'account/logout',
+            emptyCart: 'cart/emptyCart'
+        }),
         handleLogout() {
             this.logout()
+            this.emptyCart()
         }
     }
 }

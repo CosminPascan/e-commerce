@@ -5,7 +5,12 @@ export default {
     },
     getters: {
         getCartItems: state => state.items,
-        getTotalPrice: state => state.items.reduce((acc, i) => acc + (i.price * i.quantity), 0)
+        getTotalPrice: state => state.items.reduce((acc, i) => acc + (i.price * i.quantity), 0),
+        isItemAvailable: state => itemId => {
+            const item = state.items.find(i => i.id === itemId)
+            if (item) return item.stock > item.quantity ? true : false
+            return true 
+        }
     },
     mutations:{
         ADD_TO_CART(state, item) {
@@ -14,6 +19,9 @@ export default {
         },
         REMOVE_ITEM(state, id) {
             state.items = state.items.filter(i => i.id !== id)
+        },
+        EMPTY_CART(state) {
+            state.items = []
         },
         INCREASE_QUANTITY(state, id) {
             const cartItem = state.items.find(i => i.id === id)
@@ -41,6 +49,9 @@ export default {
         },
         decreaseQuantity({ commit }, id) {
             commit('DECREASE_QUANTITY', id)
+        },
+        emptyCart({ commit }) {
+            commit('EMPTY_CART')
         }
     }
 }
