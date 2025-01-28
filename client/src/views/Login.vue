@@ -1,6 +1,6 @@
 <template>
-    <v-main class="d-flex align-center justify-center">
-        <v-form @submit.prevent="handleLogin">
+    <v-main class="d-flex align-center justify-center bg-grey-lighten-3">
+        <v-form @submit.prevent="handleLogin" ref="form">
             <v-card class="pa-12" min-width="380" elevation="8" rounded="lg">
                 <div class="text-center text-h4 mb-6">Login</div>
 
@@ -25,6 +25,7 @@
                     :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                     :type="visible ? 'text' : 'password'"
                     label="Password"
+                    autocomplete="on"
                     density="compact"
                     variant="outlined"
                     prepend-inner-icon="mdi-lock-outline"
@@ -61,8 +62,13 @@ export default {
     },
     methods: {
         ...mapActions({ login: 'account/login' }),
-        handleLogin() {
-            this.login({ email: this.email, password: this.password })
+        async handleLogin() {
+            const { valid } = await this.$refs.form.validate()
+            if (valid) {
+                this.login({ email: this.email, password: this.password })
+            } else {
+                alert('Fix errors before submitting!')
+            }
         }
     }
 }

@@ -16,6 +16,9 @@ export default {
         SET_PERFUMES(state, perfumes) {
             state.perfumes = perfumes
         },
+        ADD_PERFUMES(state, perfumes) {
+            state.perfumes.push(...perfumes)
+        },
         ADD_PERFUME(state, perfume) {
             state.perfumes.push(perfume)
         },
@@ -31,6 +34,24 @@ export default {
             try {
                 const response = await axiosInstance.get('/perfumes')
                 commit('SET_PERFUMES', response.data)
+            } catch (error) {
+                console.error(error.response.data.message)
+            }
+        },
+        async fetchFirstBatch({ commit }) {
+            try {
+                const response = await axiosInstance.get('/perfumes/first-batch')
+                commit('SET_PERFUMES', response.data)
+            } catch (error) {
+                console.error(error.response.data.message)
+            }
+        },
+        async fetchNextBatch({ state, commit }) {
+            try {
+                const lastVisibleId = state.perfumes.at(-1).id
+                const response = await axiosInstance.get(`/perfumes/next-batch/${lastVisibleId}`)
+                if (response.data.length === 0) return 'empty'
+                commit('ADD_PERFUMES', response.data)
             } catch (error) {
                 console.error(error.response.data.message)
             }

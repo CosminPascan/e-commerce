@@ -1,6 +1,6 @@
 <template>
-    <v-main class="d-flex align-center justify-center">
-        <v-form @submit="(event) => register(event)">
+    <v-main class="d-flex align-center justify-center bg-grey-lighten-3">
+        <v-form @submit.prevent="handleRegister" ref="registerForm">
             <v-card class="pa-12" min-width="380" elevation="8" rounded="lg">
                 <div class="text-center text-h4 mb-6">Register</div>
 
@@ -25,6 +25,7 @@
                     :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                     :type="visible ? 'text' : 'password'"
                     label="Password"
+                    autocomplete="on"
                     density="compact"
                     variant="outlined"
                     prepend-inner-icon="mdi-lock-outline"
@@ -40,7 +41,7 @@
 </template>
 
 <script>
-import axiosInstance from '@/api/axios'
+import { mapActions } from 'vuex';
 
 export default {
     name: 'Register',
@@ -58,18 +59,13 @@ export default {
         ]
     }),
     methods: {
-        async register(event) {
-            event.preventDefault()
-            try {
-                await axiosInstance.post('/register', {
-                    email: this.email,
-                    password: this.password
-                })
-                this.$router.push('/login')
-            } catch (error) {
-                if (error.status === 400) alert(error.response.data.message)
-                this.email = ''
-                this.password = ''
+        ...mapActions({ register: 'account/register' }),
+        async handleRegister() {
+            const { valid } = await this.$refs.registerForm.validate()
+            if (valid) {
+                this.register({ email: this.email, password: this.password })
+            } else {
+                alert('Fix errors before submitting!')
             }
         }
     }

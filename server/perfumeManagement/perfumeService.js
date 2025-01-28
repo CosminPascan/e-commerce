@@ -18,6 +18,45 @@ const getAllPerfumes = async (req, res) => {
     }
 }
 
+const getFirstBatch = async (req, res) => {
+    try {
+        const perfumesRef = db.collection('perfumes').orderBy('name').limit(8)
+        const querySnapshot = await perfumesRef.get()
+        const perfumes = querySnapshot.docs.map(doc => {
+            return {
+                id: doc.id,
+                ...doc.data()
+            }
+        })
+
+        res.status(200).json(perfumes)
+    } catch (error) {
+        res.status(500).send(JSON.stringify(error))
+    }
+}
+
+const getNextBatch = async (req, res) => {
+    const lastVisibleId = req.params.id
+
+    try {
+        const lastPerfumeRef = db.collection('perfumes').doc(lastVisibleId)
+        const lastPerfumeDoc = await lastPerfumeRef.get()
+
+        const perfumesRef = db.collection('perfumes').orderBy('name').startAfter(lastPerfumeDoc).limit(8)
+        const querySnapshot = await perfumesRef.get()
+        const perfumes = querySnapshot.docs.map(doc => {
+            return {
+                id: doc.id,
+                ...doc.data()
+            }
+        })
+
+        res.status(200).json(perfumes)
+    } catch (error) {
+        res.status(500).send(JSON.stringify(error))
+    }
+}
+
 const postPerfume = async (req, res) => {
     const perfume = req.body
 
@@ -91,6 +130,8 @@ const postExternalPerfumes = async (req, res) => {
 
 module.exports = {
     getAllPerfumes,
+    getFirstBatch,
+    getNextBatch,
     postPerfume,
     putPerfume,
     deletePerfume,

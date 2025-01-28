@@ -31,7 +31,17 @@ export default {
                 commit('SET_USER', response.data.user)
                 router.push('/')
             } catch (error) {
-                console.error(error.response.data.message)
+                console.error(error)
+                alert(error.response.data.message)
+            }
+        },
+        async register({ commit }, user) {
+            try {
+                await axiosInstance.post('/register', user)
+                router.push('/login')
+            } catch (error) {
+                console.error(error)
+                alert(error.response.data.message)
             }
         },
         logout({ commit }) {
