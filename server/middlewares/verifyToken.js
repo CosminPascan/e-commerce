@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const privateKey = process.env.PRIVATE_KEY
+const privateKey = process.env.JWT_PRIVATE_KEY
 
 const verifyToken = (req, res, next) => {
     const accessToken = req.cookies['access-token']

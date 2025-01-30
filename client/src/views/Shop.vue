@@ -62,7 +62,8 @@ export default {
     data() {
         return {
             hasMore: true,
-            searchValue: ''
+            searchValue: '',
+            wait: true
         }
     },
     computed: {
@@ -105,6 +106,11 @@ export default {
             this.searchValue = e.target.value
         },
         async load({ done }) {
+            if (this.wait) {
+                setTimeout(() => {
+                    this.wait = false
+                }, 1000)
+            }
             setTimeout(async () => {
                 const res = await this.fetchNextBatch()
                 if (res === 'empty') {

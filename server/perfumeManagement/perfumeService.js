@@ -1,5 +1,6 @@
 const db = require('../database/dbConfig')
-const perfumes = require('../json_data/perfumes.json')
+// const perfumes = require('..//scraped_data/perfumes.json')
+const perfumes = []
 
 const getAllPerfumes = async (req, res) => {
     try {

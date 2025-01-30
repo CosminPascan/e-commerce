@@ -2,8 +2,10 @@ import router from '@/router'
 import store from '@/store'
 import axios from 'axios'
 
+const url = import.meta.env.VITE_BACKEND_API
+
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: url,
     headers: { 'Content-Type': 'application/json' },
     withCredentials: true
 })

@@ -43,7 +43,7 @@ export default {
                 const response = await axiosInstance.get('/perfumes/first-batch')
                 commit('SET_PERFUMES', response.data)
             } catch (error) {
-                console.error(error.response.data.message)
+                console.error(error)
             }
         },
         async fetchNextBatch({ state, commit }) {
@@ -53,7 +53,7 @@ export default {
                 if (response.data.length === 0) return 'empty'
                 commit('ADD_PERFUMES', response.data)
             } catch (error) {
-                console.error(error.response.data.message)
+                console.error(error)
             }
         },
         async addPerfume({ commit }, payload) {

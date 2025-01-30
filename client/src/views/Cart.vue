@@ -2,7 +2,7 @@
     <v-main>       
         <v-container>
             <div class="d-flex align-center justify-space-between my-10">
-                <div class="text-h5 font-weight-bold">Cart items</div>
+                <div class="text-h5 font-weight-bold">Cart</div>
                 <div class="d-flex align-center justify-center ga-16">
                     <div class="text-subtitle-1 font-weight-bold" >
                         {{ 'Total: ' + totalPrice + ' RON'}}

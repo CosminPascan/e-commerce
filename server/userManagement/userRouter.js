@@ -3,7 +3,6 @@ const router = express.Router()
 const userService = require('./userService')
 const { registerValidationRules, loginValidationRules } = require('../validators/userValidator')
 const validate = require('../middlewares/validate')
-const verifyToken = require('../middlewares/verifyToken')
 
 router.get('/users', userService.getAllUsers)
 router.post('/register', registerValidationRules, validate, userService.registerUser)

@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const db = require('../database/dbConfig')
 const jwt = require('jsonwebtoken')
-const privateKey = process.env.PRIVATE_KEY
+const privateKey = process.env.JWT_PRIVATE_KEY
 
 const registerUser = async (req, res) => {
     const { email, password } = req.body
@@ -58,7 +58,7 @@ const loginUser = async (req, res) => {
     bcrypt.compare(user.password, hashedPassword, (error, result) => {
         if (result) {
             const accessToken = jwt.sign(encodedData, privateKey, { expiresIn: '3000s' })
-            res.cookie('access-token', accessToken, { httpOnly: true })
+            res.cookie('access-token', accessToken, { httpOnly: true, secure: true, sameSite: 'None' })
             res.status(200).send({ user: encodedData, accessToken: accessToken })
         } else {
             res.status(401).send({ message: 'Wrong password! Try again!' })

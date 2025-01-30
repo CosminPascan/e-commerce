@@ -15,7 +15,7 @@ const store = createStore({
     plugins: [
         createPersistedState({
             storage: window.sessionStorage,
-            // paths: ['account'] - specifica ce module sa fie persistente
+            // paths: ['account'] - specifica modulele persistente
         })
     ]
 })
