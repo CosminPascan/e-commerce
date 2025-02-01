@@ -35,7 +35,7 @@ export default {
                 const response = await axiosInstance.get('/perfumes')
                 commit('SET_PERFUMES', response.data)
             } catch (error) {
-                console.error(error.response.data.message)
+                console.error(error)
             }
         },
         async fetchFirstBatch({ commit }) {
@@ -47,6 +47,7 @@ export default {
             }
         },
         async fetchNextBatch({ state, commit }) {
+            if (state.perfumes.length === 0) return
             try {
                 const lastVisibleId = state.perfumes.at(-1).id
                 const response = await axiosInstance.get(`/perfumes/next-batch/${lastVisibleId}`)
@@ -70,7 +71,7 @@ export default {
                 commit('ADD_PERFUME', response.data)
                 router.push('/')
             } catch {
-                console.error(error.response.data.message)
+                console.error(error)
             }
         },
         async editPerfume({ commit }, payload) {
@@ -89,7 +90,7 @@ export default {
                 commit('EDIT_PERFUME', response.data)
                 router.push('/')
             } catch {
-                console.error(error.response.data.message)
+                console.error(error)
             }
         },
         async deletePerfume({ commit }, perfume) {
@@ -104,7 +105,7 @@ export default {
 
                 commit('DELETE_PERFUME', perfume.id)
             } catch (error) {
-                console.error(error.response.data.message)
+                console.error(error)
             }
         }
     }

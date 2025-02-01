@@ -4,7 +4,7 @@
             <v-btn to="/register" class="mx-4">Register</v-btn>
             <v-btn to="/login" class="mx-4">Login</v-btn>
         </div>
-        <div v-if="isAuthenticated && $vuetify.display.smAndUp" class="d-flex d-flex mr-auto">
+        <div v-if="isAuthenticated && $vuetify.display.mdAndUp" class="d-flex d-flex mr-auto">
             <v-btn to="/" class="mx-4">Shop</v-btn>
             <v-btn to="/cart" class="mx-4">Cart</v-btn>
             <v-btn to="/orders" class="mx-4">Orders</v-btn>
@@ -14,7 +14,7 @@
             <v-btn class="mx-4" color="red" variant="tonal" @click="handleLogout">Logout</v-btn>
         </div>
     </v-app-bar>
-    <v-bottom-navigation v-if="isAuthenticated" class="d-sm-none">
+    <v-bottom-navigation v-if="isAuthenticated" class="d-md-none">
         <v-btn to="/">Shop</v-btn>
         <v-btn to="/cart">Cart</v-btn>
         <v-btn to="/orders">Orders</v-btn>

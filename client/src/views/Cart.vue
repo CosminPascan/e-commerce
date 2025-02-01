@@ -1,7 +1,7 @@
 <template>
-    <v-main>       
+    <v-main class="mx-4">       
         <v-container>
-            <div class="d-flex align-center justify-space-between my-10">
+            <div class="d-flex align-center justify-space-between my-10 ga-8">
                 <div class="text-h5 font-weight-bold">Cart</div>
                 <div class="d-flex align-center justify-center ga-16">
                     <div class="text-subtitle-1 font-weight-bold" >
@@ -38,7 +38,7 @@
                             </v-btn>
                         </div>
                     </v-col>
-                    <v-col cols="2" class="d-flex align-center justify-center">
+                    <v-col cols="4" class="d-flex align-center justify-center">
                         <v-btn color="red" variant="plain" @click="handleRemoveItem(item.id)">
                             Remove
                         </v-btn>

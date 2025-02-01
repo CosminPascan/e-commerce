@@ -2,12 +2,12 @@
     <v-main class="bg-grey-lighten-3">
         <v-container class="mb-5">
             <v-infinite-scroll @load="load" :disabled="!hasMore">
-                <div class="d-flex align-center justify-center mb-8 ga-16">
+                <div class="d-flex align-center justify-center mx-10 mb-8 ga-16">
                     <div class="text-center text-h5 font-weight-bold">Perfumes</div>
                     <v-btn v-if="role === 'admin'" color="blue" size="large" @click="navToAddForm">
                         Add perfume
                     </v-btn>
-                    <v-text-field class="filter" max-width="300" density="compact" 
+                    <v-text-field v-else class="filter" max-width="300" density="compact" 
                         prepend-inner-icon="mdi-filter-variant" @input="handleSearch">
                     </v-text-field>
                 </div>
@@ -62,8 +62,7 @@ export default {
     data() {
         return {
             hasMore: true,
-            searchValue: '',
-            wait: true
+            searchValue: ''
         }
     },
     computed: {
@@ -106,11 +105,6 @@ export default {
             this.searchValue = e.target.value
         },
         async load({ done }) {
-            if (this.wait) {
-                setTimeout(() => {
-                    this.wait = false
-                }, 1000)
-            }
             setTimeout(async () => {
                 const res = await this.fetchNextBatch()
                 if (res === 'empty') {

@@ -1,10 +1,10 @@
 <template>
     <v-main class="d-flex align-center justify-center bg-grey-lighten-3">
-        <v-form class="ma-12" @submit.prevent="handleEditPerfume" ref="form">
-            <v-card class="px-12 py-10" width="700" elevation="8" rounded="lg">
-                <div class="d-flex align-center justify-space-between pb-10">
-                    <v-img :src="imageSrc" max-height="80px" max-width="120px"></v-img>
-                    <div class="text-center text-h5 font-weight-bold">Edit perfume</div>
+        <v-form class="ma-12 w-md-50" @submit.prevent="handleEditPerfume" ref="form">
+            <v-card class="px-12 py-10" elevation="8" rounded="lg">
+                <div class="d-flex align-center justify-space-between pb-10 ga-4">
+                    <v-img :src="imageSrc" max-height="80" max-width="100"></v-img>
+                    <div class="text-center text-h5 font-weight-bold">Edit</div>
                     <v-btn type="submit" color="blue">Edit</v-btn>
                 </div>
 
@@ -124,7 +124,10 @@ export default {
                 value => value !== 'Choose a type' || 'This selection is required!',
                 value => value !== 'Choose a category' || 'This selection is required!'
             ],
-            numericInputRules: [value => !!value || 'This field is required!'],
+            numericInputRules: [
+                value => !!value || 'This field is required!',
+                value => value > 0 || 'This field must be a positive number!'
+            ],
             numericArrayInputRules: [array => array.length > 0 || 'Add more values!'],
             fileInputRules: [
                 value => (value.length === 0 || value[0].type.includes('image/')) || 'File format is wrong!'
